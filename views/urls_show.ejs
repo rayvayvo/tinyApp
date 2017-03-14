@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+    <% include ../views/partials/_header %>
+
+</head>
+<body>
+  <main>
+        <div class="jumbotron">
+            <h1>This is great</h1>
+            <p>URLS show page</p>
+        <ul>
+            <% for(let shortUrl in urlDatabase) { %>
+            <p>Full Url: <%= urlDatabase[shortUrl]%></p>
+            <p>Short Url: <%= shortUrl%></p>
+            <% }; %>
+
+        </ul>
+      </div>
+  </main>
+</body>
+</html>
