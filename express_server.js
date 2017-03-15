@@ -30,20 +30,27 @@ app.post("/urls", (req, res) => {
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
+app.post("/urls/:id/delete", (req, res) => {
+
+
+});
+
+
+
 // app.get("/urls.json", (req, res) => {
 //   res.json(urlDatabase);
 // });
 
-// app.get("/urls/:id", (req, res) => {
-//   let templateVars = { shortURL: req.params.id };
-//   res.render("urls_show", {urlDatabase});
-// });
+app.get("/urls/:id", (req, res) => {
+  let templateVars = { shortURL: req.params.id };
+  res.render("urls_show", {urlDatabase});
+});
 
+
+//below code needs to be refactored to only pull the first key value of the urldatabase, right now it loops through the entire
+//object and redirects to the first website URL. kinda messy approach.
 app.get("/u/:shortURL", (req, res) => {
-  // console.log(urlDatabase);
   for (let longURL in urlDatabase)
-    // console.log(urlDatabase[longURL]);
-  // let longURL = urlDatabase[0];
   res.redirect(urlDatabase[longURL]);
 });
 

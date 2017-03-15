@@ -9,7 +9,15 @@
   <main>
         <div class="jumbotron">
             <h1>This is great</h1>
-            <p>Welcome to templating using EJS</p>
+            <p>Shortening Da URLS</p>
+        <ul>
+            <% for(let shortUrl in urlDatabase) { %>
+              <p><%= shortUrl%> : <%= urlDatabase[shortUrl]%> </p>
+              <form method="POST" action="/urls/<%= shortUrl %>/delete"> <button type="button">Delete</button> </form>
+            <% }; %>
+
+        </ul>
+
     <!-- Add your EJS code here -->
     <!-- list urls AND short forms -->
 <!-- link for shortening URL -->
