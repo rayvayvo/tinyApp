@@ -13,7 +13,8 @@
         <ul>
             <% for(let shortUrl in urlDatabase) { %>
               <p><%= shortUrl%> : <%= urlDatabase[shortUrl]%> </p>
-              <form method="POST" action="/urls/<%= shortUrl %>/delete"> <button type="button">Delete</button> </form>
+              <form method="get" action="<%= urlDatabase[shortUrl] %>"> <input type="submit" value="Go to" /> </form>
+              <form method="POST" action="/urls/<%= shortUrl %>/delete"> <input type="submit" value= "delete" /> </form>
             <% }; %>
 
         </ul>
@@ -26,3 +27,5 @@
   </main>
 </body>
 </html>
+
+

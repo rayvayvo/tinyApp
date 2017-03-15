@@ -31,8 +31,15 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-
-
+  // debugger;
+if (urlDatabase[req.params.id]) {
+  delete urlDatabase[req.params.id]
+} else {
+// print errorrrrr
+}
+res.redirect("/urls");
+//   let id = urlDatabase
+// delete urlDatabase;
 });
 
 
