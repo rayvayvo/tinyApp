@@ -73,6 +73,13 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(urlDatabase[longURL]);
 });
 
+app.post("/urls/login", (req, res) => {
+  let userName = req.body.userName;
+  res.cookie('userName', userName);
+  console.log(req.body);
+  res.redirect("/urls");
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
