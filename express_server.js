@@ -10,6 +10,7 @@ app.set("view engine", "ejs");
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
+  //add new short and long url keys
 };
 
 app.get("/urls", function(req, res) {
@@ -33,15 +34,18 @@ app.post("/urls", (req, res) => {
 //   res.json(urlDatabase);
 // });
 
-// app.get("/hello", (req, res) => {
-//   res.end("<html><body>Hello <b>World</b></body></html>\n");
+// app.get("/urls/:id", (req, res) => {
+//   let templateVars = { shortURL: req.params.id };
+//   res.render("urls_show", {urlDatabase});
 // });
 
-app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id };
-  res.render("urls_show", {urlDatabase});
+app.get("/u/:shortURL", (req, res) => {
+  // console.log(urlDatabase);
+  for (let longURL in urlDatabase)
+    // console.log(urlDatabase[longURL]);
+  // let longURL = urlDatabase[0];
+  res.redirect(urlDatabase[longURL]);
 });
-
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -56,6 +60,7 @@ var changeLetter = ""
 
     changeLetter = (Math.random() + 1).toString(36).slice(0, 8);
 return changeLetter;
+}
 
 
 
