@@ -16,7 +16,11 @@ var urlDatabase = {
 };
 
 app.get("/urls", function(req, res) {
-  res.render("urls_index", { urlDatabase });
+  let short_url = req.params.id
+  let long_url = urlDatabase[short_url]
+  let templateVars = { shortURL: short_url, longURL: long_url,
+  username: req.cookies["userName"] };
+  res.render("urls_index", { urlDatabase, templateVars });
 });
 
 app.get("/", (req, res) => {
@@ -60,7 +64,8 @@ app.post("/urls/:id/update", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let short_url = req.params.id
   let long_url = urlDatabase[short_url]
-  let templateVars = { shortURL: short_url, longURL: long_url };
+  let templateVars = { shortURL: short_url, longURL: long_url,
+  username: req.cookies["userName"] };
   // console.log(templateVars);
   res.render("urls_show", {templateVars});
 });
