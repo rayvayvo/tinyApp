@@ -8,13 +8,9 @@
 <body>
   <main>
         <div class="jumbotron">
-            <h1>This is great</h1>
-            <p>URLS show page</p>
         <ul>
-            <% for(let shortUrl in urlDatabase) { %>
-            <p>Full Url: <%= urlDatabase[shortUrl]%></p>
-            <p>Short Url: <%= shortUrl%></p>
-            <% }; %>
+        <h1><p>ShortURL: <%= templateVars.shortURL %></p></h1>
+
 
         </ul>
       </div>

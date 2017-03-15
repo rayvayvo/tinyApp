@@ -50,7 +50,7 @@ res.redirect("/urls");
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id };
-  res.render("urls_show", {urlDatabase});
+  res.render("urls_show", {templateVars});
 });
 
 
