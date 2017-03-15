@@ -31,25 +31,35 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  // debugger;
 if (urlDatabase[req.params.id]) {
   delete urlDatabase[req.params.id]
 } else {
-// print errorrrrr
+// print errorr saying id not found
 }
 res.redirect("/urls");
 //   let id = urlDatabase
 // delete urlDatabase;
 });
 
-
+app.post("/urls/:id/update", (req, res) => {
+  if (urlDatabase[req.params.id]) {
+  urlDatabase[req.params.id] = req.body.longURL
+  // debugger;
+  } else {
+    //print error about no website to update info on
+  }
+  res.redirect("/urls");
+});
 
 // app.get("/urls.json", (req, res) => {
 //   res.json(urlDatabase);
 // });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id };
+  let short_url = req.params.id
+  let long_url = urlDatabase[short_url]
+  let templateVars = { shortURL: short_url, longURL: long_url };
+  console.log(templateVars);
   res.render("urls_show", {templateVars});
 });
 
