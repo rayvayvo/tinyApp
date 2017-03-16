@@ -15,6 +15,20 @@ var urlDatabase = {
   //add new short and long url keys
 };
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
+
+
 app.get("/urls", function(req, res) {
   let short_url = req.params.id
   let long_url = urlDatabase[short_url]
@@ -24,15 +38,19 @@ app.get("/urls", function(req, res) {
 });
 
 app.get("/", (req, res) => {
-  res.end("Hello!");
+  res.redirect("/urls");
 });
 
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+app.get("/register", (req, res) => {
+  res.render("urls_register");
+});
+
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
+  console.log(req.body);
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
@@ -43,14 +61,11 @@ if (urlDatabase[req.params.id]) {
 // print errorr saying id not found
 }
 res.redirect("/urls");
-//   let id = urlDatabase
-// delete urlDatabase;
 });
 
 app.post("/urls/:id/update", (req, res) => {
   if (urlDatabase[req.params.id]) {
   urlDatabase[req.params.id] = req.body.longURL
-  // debugger;
   } else {
     //print error about no website to update info on
   }
@@ -90,6 +105,38 @@ app.post("/urls/logout", (req, res) => {
   res.redirect("/urls");
 });
 
+
+
+// app.post("/register", (req, res) => {
+//   // let userID = (Math.random() + 1).toString(36).slice(0, 8);
+//   // let userInfo = {
+//   //   userID: {
+//   //       id: userID,
+//   //       email: req.body.email,
+//   //       password: req.body.password
+//   //     }
+//   // }
+// // users.push(userID);
+// // console.log(users);
+//   res.redirect("/urls");
+// });
+
+
+
+// const users = {
+//   "userRandomID": {
+//     id: "userRandomID",
+//     email: "user@example.com",
+//     password: "purple-monkey-dinosaur"
+//   },
+//  "user2RandomID": {
+//     id: "user2RandomID",
+//     email: "user2@example.com",
+//     password: "dishwasher-funk"
+//   }
+// }
+
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
@@ -106,7 +153,11 @@ return changeLetter;
 }
 
 
-
+// modify register to take in the email and password and pass it along as new object values into the "user" database
+// along with setting new user email and password keys, also generate a random string for a user ID and set that as the user ID key
+// once those values are set, create a cookie with all three keys.
+// have every page check if there is a cookie with all 3 keys present, if not, have a link to log in on the page
+//
 
 
 
