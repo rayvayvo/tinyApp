@@ -5,17 +5,17 @@
 
         <ul class="nav navbar-nav">
 
-          <% if (templateVars.username) { %>
-            <p>HELLO THERE: <%= templateVars.username %> </p>
+          <% if (templateVars.user) { %>
+            <p>HELLO THERE: <%= templateVars.user %> </p>
             <form method="POST" action="/urls/logout">
               <input type="submit" value= "Logout">
             </form>
           <% } else { %>
-            <form method="POST" action="/urls/login">
-              <input type="text" name="userName">
+            <form method="GET" action="/login">
+              Existing user?
               <input type="submit" value= "Login">
             </form>
-              <form method="GET" action="/register">
+            <form method="GET" action="/register">
               New user?
               <input type="submit" value= "Register here!">
             </form>
@@ -23,7 +23,6 @@
 
 
           <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
         </ul>
     </div>
 </nav>
