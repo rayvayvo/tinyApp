@@ -32,7 +32,7 @@ app.get("/urls", function(req, res) {
   let short_url = req.params.id
   let long_url = urlDatabase[short_url]
   let templateVars = { shortURL: short_url, longURL: long_url,
-  user: req.cookies["userName"] };
+  user: req.cookies["user_id"] };
   res.render("urls_index", { urlDatabase, templateVars });
 });
 
@@ -123,7 +123,7 @@ app.post("/login", (req, res) => {
   }
 
   if (foundEmail === true && foundPass === true) {
-    res.cookie('User_id', currentID);
+    res.cookie('user_id', currentID);
     res.redirect("/urls");
   } else if (foundEmail === false || foundPass === false) {
     res.redirect("/error");
@@ -163,14 +163,8 @@ app.post("/register", (req, res) => {
             password: req.body.password
           }
       users[userID] = userInfo;
-
-      console.log("users email right hurr: " + users[userID].email);
-      console.log("users pass right hurr: " + users[userID].password);
-      console.log("user ID here: " + users[userID].id);
-
       res.cookie('User_id', userID);
       res.redirect("/urls");
-
 
     }
   } else {
