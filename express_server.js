@@ -105,19 +105,31 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-// console.log("req.email value here: " + req.body.email);
-// console.log("password: " + req.body.password)
-  for (email in users) {
-    if (req.body.email == users.email) {
-      var user = users.id;
-      res.cookie('user_id', user);
-    } else {
-      res.redirect("/error");
+  let foundEmail = false;
+  let foundPass = false;
+  let currentID = "";
+
+//reads login email, finds it in the database, matches it to an id and set that id value as a cookie.
+
+  for (userID in users) {
+
+    if (req.body.email === users[userID].email) {
+      foundEmail = true;
+      currentID = users[userID].id
+    }
+    if (req.body.password === users[userID].password) {
+      foundPass = true;
     }
   }
-  res.redirect("/urls");
+
+  if (foundEmail === true && foundPass === true) {
+    res.cookie('User_id', currentID);
+    res.redirect("/urls");
+  } else if (foundEmail === false || foundPass === false) {
+    res.redirect("/error");
+  }
+
 });
-//cookie needs to read login email, find it in the database, match it to an id and set that id value as user_id
 
 
 app.post("/urls/logout", (req, res) => {
@@ -130,40 +142,40 @@ app.post("/urls/logout", (req, res) => {
 app.post("/register", (req, res) => {
 
   if ( req.body.email.length > 0 && req.body.password.length > 0) {
+    let foundEmail = false;
+    let foundPass = false;
+    let currentID = "";
 
+    for (userID in users) {
 
-      // for (users.email in users) {
+      if (req.body.email === users[userID].email) {
+        foundEmail = true;
+      }
+    }
 
-        // if (users.email == req.body.email) {
-        //   need to fix email checking error. doesnt correctly check email value
-        //   thinking I need to loop through users, compare email values, if they're the same, return error "email already in use"
-        //   res.redirect("/error");
-
-        // } else {
-
-          let userID = (Math.random() + 1).toString(36).slice(2, 8);
-          let userInfo = {
+    if (foundEmail === true) {
+      res.redirect("/error");
+    } else {
+        let userID = (Math.random() + 1).toString(36).slice(2, 8);
+        let userInfo = {
             id: userID,
             email: req.body.email,
             password: req.body.password
           }
       users[userID] = userInfo;
 
-      console.log("users email right hurr" + users[userID].email);
-      console.log("users pass right hurr" + users[userID].password);
+      console.log("users email right hurr: " + users[userID].email);
+      console.log("users pass right hurr: " + users[userID].password);
       console.log("user ID here: " + users[userID].id);
 
-      res.cookie('User_id', userInfo)
+      res.cookie('User_id', userID);
       res.redirect("/urls");
-
-      //   }
-      // }
-  } else {
-
-      res.redirect("/error");
 
 
     }
+  } else {
+      res.redirect("/error");
+  }
 });
 
 app.listen(PORT, () => {
