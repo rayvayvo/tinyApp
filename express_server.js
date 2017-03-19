@@ -3,6 +3,7 @@ const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 const cookieParser = require('cookie-parser');
 const bodyParser = require("body-parser");
+const bcrypt = require('bcrypt');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -87,7 +88,6 @@ app.post("/create", (req, res) => {
   } else {
     urlDatabase[cookieID] = {[shortURL]:longURL};
   }
-  console.log({urlDatabase});
   res.redirect("/urls");
 });
 
@@ -152,20 +152,21 @@ app.post("/login", (req, res) => {
   let foundEmail = false;
   let foundPass = false;
   let currentID = "";
+  const password = req.body.password;
+  const hashed_password = bcrypt.hashSync(password, 10);
 
 //reads login email, finds it in the database, matches it to an id and set that id value as a cookie.
 
   for (userID in users) {
 
     if (req.body.email === users[userID].email) {
-      foundEmail = true;
-      currentID = users[userID].id
-    }
-    if (req.body.password === users[userID].password) {
-      foundPass = true;
+        foundEmail = true;
+        currentID = users[userID].id
+      if (bcrypt.compareSync(req.body.password, users[userID].password) === true) {
+        foundPass = true;
+      }
     }
   }
-
   if (foundEmail === true && foundPass === true) {
     res.cookie('user_id', currentID);
     res.redirect("/urls");
@@ -189,6 +190,8 @@ app.post("/register", (req, res) => {
     let foundEmail = false;
     let foundPass = false;
     let currentID = "";
+    const password = req.body.password; // you will probably this from req.params
+    const hashed_password = bcrypt.hashSync(password, 10);
 
     for (userID in users) {
 
@@ -204,7 +207,7 @@ app.post("/register", (req, res) => {
         let userInfo = {
             id: userID,
             email: req.body.email,
-            password: req.body.password
+            password: hashed_password
           }
       users[userID] = userInfo;
       res.cookie('user_id', userID);
