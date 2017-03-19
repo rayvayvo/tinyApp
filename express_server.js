@@ -4,11 +4,18 @@ const PORT = process.env.PORT || 8080; // default port 8080
 const cookieParser = require('cookie-parser');
 const bodyParser = require("body-parser");
 const bcrypt = require('bcrypt');
+const cookieSession = require('cookie-session');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.set("view engine", "ejs");
+app.use(cookieSession({
+  name: 'session',
+  keys: ["user_ids"],
 
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
 var urlDatabase = {
   "userID" : {
@@ -16,7 +23,6 @@ var urlDatabase = {
     "9sm5xK": "http://www.google.com"
   }
 };
-
 const users = {
   "userRandomID": {
     id: "userRandomID",
@@ -32,7 +38,7 @@ const users = {
 
 
 app.get("/urls", function(req, res) {
-  let cookieID = req.cookies["user_id"];
+  let cookieID = req.session.user_id;
 
   if (users[cookieID]) {
     let cookieEmail = users[cookieID].email
@@ -79,7 +85,7 @@ for(var key in source) {
 
 */
 app.post("/create", (req, res) => {
-  let cookieID = req.cookies["user_id"];
+  let cookieID = req.session.user_id;
   let shortURL = generateRandomString();
   let longURL = req.body.addURL;
 
@@ -92,7 +98,7 @@ app.post("/create", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  let cookieID = req.cookies["user_id"];
+  let cookieID = req.session.user_id;
 
   if (urlDatabase[cookieID][req.params.id]) {
   delete urlDatabase[cookieID][req.params.id]
@@ -102,7 +108,7 @@ app.post("/urls/:id/delete", (req, res) => {
 
 app.post("/urls/:id/update", (req, res) => {
 
-  let cookieID = req.cookies["user_id"];
+  let cookieID = req.session.user_id;;
 
   if (urlDatabase[cookieID][req.params.id]) {
   urlDatabase[cookieID][req.params.id] = req.body.longURL
@@ -119,7 +125,7 @@ app.post("/urls/:id/update", (req, res) => {
 app.get("/urls/:id/edit", (req, res) => {
 //i want the edit page to take the long url and put it inside the edit form.
 //info i need to pass to edit page: long url, short url, user id
-  let cookieID = req.cookies["user_id"];
+  let cookieID = req.session.user_id;
   let short_url = req.params.id
   let long_url = urlDatabase[cookieID][short_url]
   let templateVars = { shortURL: short_url, longURL: long_url,
@@ -168,7 +174,9 @@ app.post("/login", (req, res) => {
     }
   }
   if (foundEmail === true && foundPass === true) {
-    res.cookie('user_id', currentID);
+
+    req.session.user_id = currentID;
+    // res.cookie('user_id', currentID);
     res.redirect("/urls");
   } else if (foundEmail === false || foundPass === false) {
     res.redirect("/error");
@@ -178,7 +186,7 @@ app.post("/login", (req, res) => {
 
 
 app.post("/urls/logout", (req, res) => {
-  res.clearCookie('user_id');
+  req.session = null;
   res.redirect("/urls");
 });
 
@@ -188,8 +196,8 @@ app.post("/register", (req, res) => {
 
   if ( req.body.email.length > 0 && req.body.password.length > 0) {
     let foundEmail = false;
-    let foundPass = false;
-    let currentID = "";
+    // let foundPass = false;
+    // let currentID = "";
     const password = req.body.password; // you will probably this from req.params
     const hashed_password = bcrypt.hashSync(password, 10);
 
@@ -210,7 +218,10 @@ app.post("/register", (req, res) => {
             password: hashed_password
           }
       users[userID] = userInfo;
-      res.cookie('user_id', userID);
+
+      req.session.user_id = userID
+      console.log(req.session.user_id + "ID HURR");
+      // res.cookie('user_id', userID);
       res.redirect("/urls");
 
     }
