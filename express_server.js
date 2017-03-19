@@ -87,6 +87,7 @@ app.post("/create", (req, res) => {
   } else {
     urlDatabase[cookieID] = {[shortURL]:longURL};
   }
+  console.log({urlDatabase});
   res.redirect("/urls");
 });
 
@@ -127,6 +128,18 @@ app.get("/urls/:id/edit", (req, res) => {
   res.render("urls_show", {templateVars});
 });
 
+app.get("/urls/:id/", (req, res) => {
+//when the id page is reached, go to the matching id's long URL info.
+//scroll through the URL database to find the id
+  let short_url = req.params.id
+
+  for (let userID in urlDatabase) {
+    if (urlDatabase[userID][[short_url]]) {
+        res.redirect(urlDatabase[userID][[short_url]]);
+      }
+    }
+  res.render("/urls");
+});
 
 //below code needs to be refactored to only pull the first key value of the urldatabase, right now it loops through the entire
 //object and redirects to the first website URL. kinda messy approach.
