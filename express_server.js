@@ -53,10 +53,6 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-// app.get("/urls/new", (req, res) => {
-//   res.render("urls_new");
-// });
-
 app.get("/register", (req, res) => {
   res.render("urls_register");
 });
@@ -69,21 +65,6 @@ app.get("/error", (req, res) => {
   res.render("error");
 });
 
-// app.post("/urls", (req, res) => {
-//   console.log(req.body);
-//   res.send(generateRandomString);         // Respond with 'Ok' (we will replace this)
-// });
-
-
-
-/*
-
-for(var key in source) {
-     if (source.hasOwnProperty(key)) {
-        target[key] = source[key];
-     }
-
-*/
 app.post("/create", (req, res) => {
   let cookieID = req.session.user_id;
   let shortURL = generateRandomString();
@@ -98,10 +79,10 @@ app.post("/create", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  let cookieID = req.session.user_id;
 
+  let cookieID = req.session.user_id;
   if (urlDatabase[cookieID][req.params.id]) {
-  delete urlDatabase[cookieID][req.params.id]
+    delete urlDatabase[cookieID][req.params.id]
   }
   res.redirect("/urls");
 });
@@ -109,18 +90,13 @@ app.post("/urls/:id/delete", (req, res) => {
 app.post("/urls/:id/update", (req, res) => {
 
   let cookieID = req.session.user_id;;
-
   if (urlDatabase[cookieID][req.params.id]) {
-  urlDatabase[cookieID][req.params.id] = req.body.longURL
+    urlDatabase[cookieID][req.params.id] = req.body.longURL
   } else {
     //print error about no website to update info on
   }
   res.redirect("/urls");
 });
-
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
 
 app.get("/urls/:id/edit", (req, res) => {
 //i want the edit page to take the long url and put it inside the edit form.
@@ -130,7 +106,6 @@ app.get("/urls/:id/edit", (req, res) => {
   let long_url = urlDatabase[cookieID][short_url]
   let templateVars = { shortURL: short_url, longURL: long_url,
   user: cookieID };
-  // console.log(templateVars);
   res.render("urls_show", {templateVars});
 });
 
@@ -147,13 +122,6 @@ app.get("/urls/:id/", (req, res) => {
   res.render("/urls");
 });
 
-//below code needs to be refactored to only pull the first key value of the urldatabase, right now it loops through the entire
-//object and redirects to the first website URL. kinda messy approach.
-app.get("/u/:shortURL", (req, res) => {
-  for (let longURL in urlDatabase)
-  res.redirect(urlDatabase[longURL]);
-});
-
 app.post("/login", (req, res) => {
   let foundEmail = false;
   let foundPass = false;
@@ -161,10 +129,9 @@ app.post("/login", (req, res) => {
   const password = req.body.password;
   const hashed_password = bcrypt.hashSync(password, 10);
 
-//reads login email, finds it in the database, matches it to an id and set that id value as a cookie.
+//reads login email, finds it in the database, matches it to an id.
 
   for (userID in users) {
-
     if (req.body.email === users[userID].email) {
         foundEmail = true;
         currentID = users[userID].id
@@ -174,9 +141,7 @@ app.post("/login", (req, res) => {
     }
   }
   if (foundEmail === true && foundPass === true) {
-
     req.session.user_id = currentID;
-    // res.cookie('user_id', currentID);
     res.redirect("/urls");
   } else if (foundEmail === false || foundPass === false) {
     res.redirect("/error");
@@ -196,8 +161,6 @@ app.post("/register", (req, res) => {
 
   if ( req.body.email.length > 0 && req.body.password.length > 0) {
     let foundEmail = false;
-    // let foundPass = false;
-    // let currentID = "";
     const password = req.body.password; // you will probably this from req.params
     const hashed_password = bcrypt.hashSync(password, 10);
 
@@ -221,7 +184,6 @@ app.post("/register", (req, res) => {
 
       req.session.user_id = userID
       console.log(req.session.user_id + "ID HURR");
-      // res.cookie('user_id', userID);
       res.redirect("/urls");
 
     }
@@ -244,9 +206,6 @@ var changeLetter = ""
 return changeLetter;
 }
 
-// have every page check if there is a cookie with all 3 keys present, if not, have a link to log in on the page
-//make error for invalid password entry
-//make error for existing email
 
 
 
