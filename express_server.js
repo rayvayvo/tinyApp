@@ -32,10 +32,14 @@ const users = {
 
 app.get("/urls", function(req, res) {
   let cookieID = req.cookies["user_id"];
-  let cookieEmail = users[cookieID].email
-  let templateVars = {id:cookieID, email: cookieEmail};
-  res.render("urls_index", {templateVars, urlDatabase, users});
 
+  if (users[cookieID]) {
+    let cookieEmail = users[cookieID].email
+    let templateVars = {id:cookieID, email: cookieEmail};
+    res.render("urls_index", {templateVars, urlDatabase, users});
+  } else {
+    res.render("home");
+  }
 });
 
 app.get("/", (req, res) => {
@@ -63,22 +67,34 @@ app.get("/error", (req, res) => {
 //   res.send(generateRandomString);         // Respond with 'Ok' (we will replace this)
 // });
 
+
+
+/*
+
+for(var key in source) {
+     if (source.hasOwnProperty(key)) {
+        target[key] = source[key];
+     }
+
+*/
 app.post("/create", (req, res) => {
   let cookieID = req.cookies["user_id"];
   let shortURL = generateRandomString();
   let longURL = req.body.addURL;
-  let cookieEmail = users[cookieID].email
 
-  urlDatabase[cookieID] = {
-    [shortURL]:longURL
-  };
-  let templateVars = {id:cookieID, email: cookieEmail};
-  res.render ("urls_index" , {urlDatabase, templateVars});
+  if (urlDatabase[cookieID]) {
+    urlDatabase[cookieID][shortURL] = longURL;
+  } else {
+    urlDatabase[cookieID] = {[shortURL]:longURL};
+  }
+  res.redirect("/urls");
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  if (urlDatabase[req.params.id]) {
-  delete urlDatabase[req.params.id]
+  let cookieID = req.cookies["user_id"];
+
+  if (urlDatabase[cookieID][req.params.id]) {
+  delete urlDatabase[cookieID][req.params.id]
   }
   res.redirect("/urls");
 });
