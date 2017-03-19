@@ -4,10 +4,14 @@
     <div class="container-fluid">
 
         <ul class="nav navbar-nav">
-          <% if (templateVars.user) { %>
-            <p>HELLO THERE: <%= templateVars.user %> </p>
+          <% if (templateVars.id) { %>
+            <p>HELLO THERE: <%= templateVars.email %> </p>
             <form method="POST" action="/urls/logout">
               <input type="submit" value= "Logout">
+            </form>
+            <form method="POST" action="/create">
+                <input type="text" name="addURL" value= "http://www.">
+                <input type="submit" value= "shorten URL">
             </form>
           <% } else { %>
             <form method="GET" action="/login">

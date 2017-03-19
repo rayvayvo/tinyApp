@@ -10,8 +10,10 @@ app.set("view engine", "ejs");
 
 
 var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "userID" : {
+    "b2xVn2": "http://www.lighthouselabs.ca",
+    "9sm5xK": "http://www.google.com"
+  }
 };
 
 const users = {
@@ -29,15 +31,15 @@ const users = {
 
 
 app.get("/urls", function(req, res) {
-  let short_url = req.params.id
-  let long_url = urlDatabase[short_url]
-  let templateVars = { shortURL: short_url, longURL: long_url,
-  user: req.cookies["user_id"] };
-  res.render("urls_index", { urlDatabase, templateVars });
+  let cookieID = req.cookies["user_id"];
+  let cookieEmail = users[cookieID].email
+  let templateVars = {id:cookieID, email: cookieEmail};
+  res.render("urls_index", {templateVars, urlDatabase, users});
+
 });
 
 app.get("/", (req, res) => {
-  res.redirect("/urls");
+  res.render("home");
 });
 
 // app.get("/urls/new", (req, res) => {
@@ -62,21 +64,31 @@ app.get("/error", (req, res) => {
 // });
 
 app.post("/create", (req, res) => {
-  let shortURL = generateRandomString();         // Respond with 'Ok' (we will replace this)
-  urlDatabase[shortURL] = req.body.addURL;
-  res.redirect("/urls");
+  let cookieID = req.cookies["user_id"];
+  let shortURL = generateRandomString();
+  let longURL = req.body.addURL;
+  let cookieEmail = users[cookieID].email
+
+  urlDatabase[cookieID] = {
+    [shortURL]:longURL
+  };
+  let templateVars = {id:cookieID, email: cookieEmail};
+  res.render ("urls_index" , {urlDatabase, templateVars});
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-if (urlDatabase[req.params.id]) {
+  if (urlDatabase[req.params.id]) {
   delete urlDatabase[req.params.id]
-}
-res.redirect("/urls");
+  }
+  res.redirect("/urls");
 });
 
 app.post("/urls/:id/update", (req, res) => {
-  if (urlDatabase[req.params.id]) {
-  urlDatabase[req.params.id] = req.body.longURL
+
+  let cookieID = req.cookies["user_id"];
+
+  if (urlDatabase[cookieID][req.params.id]) {
+  urlDatabase[cookieID][req.params.id] = req.body.longURL
   } else {
     //print error about no website to update info on
   }
@@ -87,11 +99,14 @@ app.post("/urls/:id/update", (req, res) => {
 //   res.json(urlDatabase);
 // });
 
-app.get("/urls/:id", (req, res) => {
+app.get("/urls/:id/edit", (req, res) => {
+//i want the edit page to take the long url and put it inside the edit form.
+//info i need to pass to edit page: long url, short url, user id
+  let cookieID = req.cookies["user_id"];
   let short_url = req.params.id
-  let long_url = urlDatabase[short_url]
+  let long_url = urlDatabase[cookieID][short_url]
   let templateVars = { shortURL: short_url, longURL: long_url,
-  user: req.cookies["user_id"] };
+  user: cookieID };
   // console.log(templateVars);
   res.render("urls_show", {templateVars});
 });
@@ -163,7 +178,7 @@ app.post("/register", (req, res) => {
             password: req.body.password
           }
       users[userID] = userInfo;
-      res.cookie('User_id', userID);
+      res.cookie('user_id', userID);
       res.redirect("/urls");
 
     }

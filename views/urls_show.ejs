@@ -9,7 +9,7 @@
   <main>
         <div class="jumbotron">
           <ul>
-          <h1><p>ShortURL: <%= templateVars.shortURL %></p></h1>
+          <h1><p>Edit: <%= templateVars.shortURL %></p></h1>
               <form method="POST" action="/urls/<%= templateVars.shortURL %>/update">
                 <input type="text" name="longURL" value="<%= templateVars.longURL %>" >
                 <input type="submit" value= "update">

@@ -10,21 +10,21 @@
 
   <main>
         <div class="jumbotron">
-            <h1>This is great</h1>
-            <p>Shortening Da URLS</p>
-            <form method="POST" action="/create">
-                <input type="text" name="addURL">
-                <input type="submit" value= "shorten URL">
-            </form>
+            <h1>Saved links:</h1>
+
         <ul>
-            <% for(let shortUrl in urlDatabase) { %>
-              <p><%= shortUrl%> : <%= urlDatabase[shortUrl]%> </p>
-              <form method="get" action="<%= urlDatabase[shortUrl] %>"> <input type="submit" value="Go to"></form>
-              <form method="get" action="/urls/<%= shortUrl %>"> <input type="submit" value="edit"></form>
-              <form method="POST" action="/urls/<%= shortUrl %>/delete"> <input type="submit" value= "delete"></form>
+            <% if (urlDatabase[templateVars.id]) { %>
+
+              <% for(let shortUrl in urlDatabase[templateVars.id]) { %>
+              <p><%= shortUrl%> : <%= urlDatabase[templateVars.id][shortUrl]%> </p>
+
+                <form method="get" action="<%= urlDatabase[templateVars.id][shortUrl] %>"> <input type="submit" value="Go to"></form>
+                <form method="get" action="/urls/<%= shortUrl %>/edit"> <input type="submit" value="edit"></form>
+                <form method="POST" action="/urls/<%= shortUrl %>/delete"> <input type="submit" value= "delete"></form>
+              <% }; %>
+            <% } else { %>
+              <h2>No links saved!</h2>
             <% }; %>
-
-
         </ul>
 
     <!-- Add your EJS code here -->
